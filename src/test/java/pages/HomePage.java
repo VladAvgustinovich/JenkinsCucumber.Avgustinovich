@@ -1,14 +1,9 @@
 package pages;
+
 import BaseTest.BaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
 public class HomePage extends BaseTest {
-    private WebDriver driver;
-
-    public HomePage(WebDriver driver) {
-        this.driver = driver;
-    }
 
     // Метод для нажатия на первую кнопку
     public void btnLogo() {
@@ -34,5 +29,4 @@ public class HomePage extends BaseTest {
         return new AddItemPage(driver);
     }
 }
-
 
