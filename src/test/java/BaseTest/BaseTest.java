@@ -20,11 +20,15 @@ public class BaseTest {
         String driverType = System.getProperty("type.driver", "remote");
         if ("remote".equalsIgnoreCase(driverType)) {
             initRemoteDriver();
-        }
+        } else  initLocalDriver();
         driver.manage().window().maximize();
         driver.get("https://qualit.applineselenoid.fvds.ru/");
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+    }
+    private static void initLocalDriver() {
+        System.setProperty("webdriver.chrome.driver", "src/main/resources/drivers/chromedriver");
+        driver = new ChromeDriver();
     }
 
     private static void initRemoteDriver() {
