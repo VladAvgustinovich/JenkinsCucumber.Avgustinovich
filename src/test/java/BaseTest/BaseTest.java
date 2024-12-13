@@ -1,29 +1,28 @@
 package BaseTest;
+
+import org.apache.commons.exec.OS;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 
-public  class BaseTest {
+
+public class BaseTest {
     public static WebDriver driver;
     private static Process process;
 
     @BeforeAll
     static void setup() {
         // Запуск стенда
-        ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", "C:\\Working Project\\qualit-sandbox.jar");
+        ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", "qualit-sandbox.jar");
         processBuilder.directory(new File("C:\\Working Project"));
 
         try {
@@ -33,41 +32,12 @@ public  class BaseTest {
             throw new RuntimeException("Ошибка запуска стенда", e);
         }
 
-        // Определение типа браузера и настройка WebDriver
-        String browser = System.getProperty("browser", "chrome"); // По умолчанию chrome
-        String selenoidUrl = System.getProperty("http://jenkins.applineselenoid.fvds.ru:4444/wd/hub/"); // Если Selenoid не используется, будет null
-
-        if (selenoidUrl != null) {
-            // Настройка удаленного WebDriver для Selenoid
-            DesiredCapabilities capabilities = new DesiredCapabilities();
-            Map<String, Object> selenoidOptions = new HashMap<>();
-            selenoidOptions.put("browserName", browser);
-            selenoidOptions.put("browserVersion", "109.0");
-            selenoidOptions.put("enableVNC", true);
-            selenoidOptions.put("enableVideo", false);
-            capabilities.setCapability("selenoid:options", selenoidOptions);
-
-            try {
-                driver = new RemoteWebDriver(
-                        URI.create(selenoidUrl).toURL(),
-                        capabilities
-                );
-            } catch (Exception e) {
-                throw new RuntimeException("Ошибка подключения к Selenoid", e);
-            }
+        // Определение типа драйвера
+        String driverType = System.getProperty("type.driver", "local");
+        if ("remote".equalsIgnoreCase(driverType)) {
+            initRemoteDriver();
         } else {
-            // Локальный запуск браузера
-            switch (browser) {
-                case "firefox":
-                    System.setProperty("webdriver.gecko.driver", "src/test/resources/geckodriver.exe");
-                    driver = new FirefoxDriver();
-                    break;
-                case "chrome":
-                default:
-                    System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
-                    driver = new ChromeDriver();
-                    break;
-            }
+            initLocalDriver();
         }
 
         driver.manage().window().maximize();
@@ -76,13 +46,60 @@ public  class BaseTest {
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
     }
 
+    private static void initLocalDriver() {
+        String browser = System.getProperty("type.browser", "chrome");
+        if (OS.isFamilyWindows()) {
+            setupDriverForOs(browser, "src/test/resources/geckodriver.exe", "src/test/resources/chromedriver.exe");
+        } else if (OS.isFamilyMac()) {
+            setupDriverForOs(browser, "src/test/resources/geckodriver_mac", "src/test/resources/chromedriver_mac");
+        } else if (OS.isFamilyUnix()) {
+            setupDriverForOs(browser, "src/test/resources/geckodriver_unix", "src/test/resources/chromedriver_unix");
+        } else {
+            throw new RuntimeException("Неизвестная ОС, драйвера не найдены");
+        }
+    }
+
+    private static void setupDriverForOs(String browser, String geckoPath, String chromePath) {
+        switch (browser.toLowerCase()) {
+            case "firefox":
+                System.setProperty("webdriver.gecko.driver", geckoPath);
+                driver = new FirefoxDriver();
+                break;
+            case "chrome":
+            default:
+                System.setProperty("webdriver.chrome.driver", chromePath);
+                driver = new ChromeDriver();
+                break;
+        }
+    }
+
+    private static void initRemoteDriver() {
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setBrowserName(System.getProperty("type.browser", "chrome"));
+        capabilities.setVersion(System.getProperty("browser.version", "latest"));
+        capabilities.setCapability("enableVNC", true);
+        capabilities.setCapability("enableVideo", false);
+        try {
+            driver = new RemoteWebDriver(URI.create(System.getProperty("selenoid.url")).toURL(), capabilities);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Ошибка подключения к Selenoid", e);
+        }
+    }
+
     @AfterAll
     static void tearDown() {
-        WebElement navbarDropdown = driver.findElement(By.id("navbarDropdown"));
-        navbarDropdown.click();
-        WebElement btnReset = driver.findElement(By.id("reset"));
-        btnReset.click();
-        driver.quit();
-        process.destroyForcibly();
+        try {
+            if (driver != null) {
+                driver.quit();
+            }
+        } catch (Exception e) {
+            System.err.println("Ошибка во время завершения работы драйвера: " + e.getMessage());
+        } finally {
+            if (process != null) {
+                process.destroyForcibly();
+            }
+        }
     }
 }
+
+
