@@ -11,6 +11,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pages.AddItemPage;
+import pages.HomePage;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -42,24 +45,8 @@ public class Hooks extends BaseTest {
 
     @AfterAll
     public static void tearDown() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        // Ожидаем выпадающий список
-        try {
-            WebElement navbarDropdown = wait.until(ExpectedConditions.elementToBeClickable(By.id("navbarDropdown")));
-            navbarDropdown.click();
-            System.out.println("Выпадающий список был кликнут.");
-        } catch (Exception e) {
-            System.out.println("Ошибка при клике на выпадающий список: " + e.getMessage());
-        }
-
-        // Ожидаем кнопку сброса
-        try {
-            WebElement btnReset = wait.until(ExpectedConditions.elementToBeClickable(By.id("reset")));
-            btnReset.click();
-            System.out.println("Кнопка сброса была нажата.");
-        } catch (Exception e) {
-            System.out.println("Ошибка при клике на кнопку сброса: " + e.getMessage());
-        }
+        HomePage homePage = new HomePage(driver);
+        homePage.selectDropdownOption("Сброс данных");
         driver.quit();
         process.destroyForcibly();
     }

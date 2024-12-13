@@ -27,6 +27,7 @@ public class BaseTest {
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
     }
     private static void initLocalDriver() {
+        System.setProperty("webdriver.chrome.driver", "src/main/resources/drivers/chromedriver");
         driver = new ChromeDriver();
     }
 
