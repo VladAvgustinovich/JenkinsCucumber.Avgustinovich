@@ -2,7 +2,7 @@ package DataBaseConfig;
 import java.sql.*;
 
 public class DataBaseConfig {
-    private final String url = "jdbc:h2:tcp://localhost:9092/mem:testdb";
+    private final String url = "jdbc:h2:tcp://qualit.applineselenoid.fvds.ru:9092/mem:testdb";
     private final String user = "user";
     private final String password = "pass";
 

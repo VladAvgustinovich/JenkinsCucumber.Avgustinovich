@@ -27,20 +27,9 @@ public class Hooks {
 
 
     @BeforeAll(order = 1)
-    @И("Установлен локальный проект, установлено подключение к БД")
+    @И("Установлено подключение к БД")
     public static void setUp() {
         if (driver == null) {
-            // Запуск локального проекта
-            ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", "C:\\Working Project\\qualit-sandbox.jar");
-            processBuilder.directory(new File("C:\\Working Project"));
-
-            try {
-                process = processBuilder.start();
-                Thread.sleep(5000); // Ожидание запуска стенда
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException("Ошибка запуска стенда", e);
-            }
-
             // Настройка WebDriver
             System.setProperty("webdriver.chromedriver/driver", "\\src\\test\\resources\\chromedriver.exe");
             driver = new ChromeDriver();
