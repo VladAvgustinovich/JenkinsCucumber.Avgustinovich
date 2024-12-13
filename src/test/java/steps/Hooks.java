@@ -28,7 +28,7 @@ public class Hooks extends BaseTest {
     private static final String password = "pass";
 
 
-    @BeforeAll(order = 2)
+    @BeforeAll(order = 1)
     public static void dataBaseConnection() {
         // Устанавливаем соединение с БД
         try {
@@ -40,18 +40,18 @@ public class Hooks extends BaseTest {
 
     }
 
-    @BeforeAll(order = 1)
-    public static void setUp() {
-        // Если драйвер не был инициализирован в BaseTest, можно выполнить настройку драйвера здесь
-        if (BaseTest.driver == null) {
-            System.setProperty("webdriver.chrome.driver", "src/main/resources/drivers/chromedriver");
-            BaseTest.driver = new ChromeDriver();
-            BaseTest.driver.manage().window().maximize();
-            BaseTest.driver.get("https://qualit.applineselenoid.fvds.ru/");
-            BaseTest.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-            BaseTest.driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
-        }
-    }
+//    @BeforeAll(order = 1)
+//    public static void setUp() {
+//        // Если драйвер не был инициализирован в BaseTest, можно выполнить настройку драйвера здесь
+//        if (BaseTest.driver == null) {
+//            System.setProperty("webdriver.chrome.driver", "src/main/resources/drivers/chromedriver");
+//            BaseTest.driver = new ChromeDriver();
+//            BaseTest.driver.manage().window().maximize();
+//            BaseTest.driver.get("https://qualit.applineselenoid.fvds.ru/");
+//            BaseTest.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+//            BaseTest.driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+//        }
+//    }
 
 
 
