@@ -28,8 +28,6 @@ public class HomePage extends BaseTest {
         // Возвращаем объект новой страницы
         return new AddItemPage(driver);
     }
-
-
 }
 
 
