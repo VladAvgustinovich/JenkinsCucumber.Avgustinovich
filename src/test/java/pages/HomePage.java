@@ -6,9 +6,6 @@ import org.openqa.selenium.WebDriver;
 
 public class HomePage extends BaseTest {
 
-    public HomePage(WebDriver driver) {
-        this.driver = driver;
-    }
     // Метод для нажатия на первую кнопку
     public void btnLogo() {
         driver.findElement(By.className("navbar-brand")).click();
