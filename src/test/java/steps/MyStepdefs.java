@@ -9,7 +9,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import pages.*;
 import DataBaseConfig.*;
-import static steps.Hooks.driver;
+import static BaseTest.BaseTest.driver;
 
 
 public class MyStepdefs {

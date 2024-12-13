@@ -3,20 +3,32 @@ package BaseTest;
 import io.qameta.allure.Step;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BaseTest {
     public static WebDriver driver;
+    private static Connection connection;
+    private static final String url = "jdbc:h2:tcp://qualit.applineselenoid.fvds.ru:9092/mem:testdb";
+    private static final String user = "user";
+    private static final String password = "pass";
+
 
     @BeforeAll
     @Step("Инициализация драйвера")
@@ -31,6 +43,12 @@ public class BaseTest {
         driver.get(System.getProperty("app.url", "https://qualit.applineselenoid.fvds.ru/"));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+        try {
+            connection = DriverManager.getConnection(url, user, password);
+            System.out.println("Подключение к базе данных успешно установлено.");
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка подключения к базе данных: " + e.getMessage());
+        }
     }
 
     private static void initLocalDriver() {
@@ -63,11 +81,32 @@ public class BaseTest {
     }
 
 
-    @AfterAll
-    @Step("Завершение работы драйвера")
     static void tearDown() {
-        if (driver != null) {
-            driver.quit();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        // Ожидаем выпадающий список
+        try {
+            WebElement navbarDropdown = wait.until(ExpectedConditions.elementToBeClickable(By.id("navbarDropdown")));
+            navbarDropdown.click();
+            System.out.println("Выпадающий список был кликнут.");
+        } catch (Exception e) {
+            System.out.println("Ошибка при клике на выпадающий список: " + e.getMessage());
+        }
+
+        // Ожидаем кнопку сброса
+        try {
+            WebElement btnReset = wait.until(ExpectedConditions.elementToBeClickable(By.id("reset")));
+            btnReset.click();
+            System.out.println("Кнопка сброса была нажата.");
+        } catch (Exception e) {
+            System.out.println("Ошибка при клике на кнопку сброса: " + e.getMessage());
+        }
+
+        try {
+            if (driver != null) {
+                driver.quit();
+            }
+        } catch (Exception e) {
+            System.err.println("Ошибка во время завершения работы драйвера: " + e.getMessage());
         }
     }
 }
