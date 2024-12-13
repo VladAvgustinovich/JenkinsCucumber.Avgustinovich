@@ -20,7 +20,7 @@ public class MyStepdefs {
     public void addFruitExotic(String name, String type, String isExotic) {
         boolean isExoticBoolean = Boolean.parseBoolean(isExotic);
         // Добавляем новый товар "Манго" через интерфейс
-        HomePage homePage = new HomePage(driver);
+        HomePage homePage = new HomePage();
         AddItemPage page = homePage.selectDropdownOption("Товары");
         page.addItem(name, type, isExoticBoolean);
         Assertions.assertTrue(page.isItemDisplayed(name), "Товар '" + name + "' не отображается на странице");
