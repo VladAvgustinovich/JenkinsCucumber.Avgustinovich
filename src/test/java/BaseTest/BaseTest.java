@@ -35,7 +35,7 @@ public  class BaseTest {
 
         // Определение типа браузера и настройка WebDriver
         String browser = System.getProperty("browser", "chrome"); // По умолчанию chrome
-        String selenoidUrl = System.getProperty("selenoid.url"); // Если Selenoid не используется, будет null
+        String selenoidUrl = System.getProperty("http://jenkins.applineselenoid.fvds.ru:4444/wd/hub/"); // Если Selenoid не используется, будет null
 
         if (selenoidUrl != null) {
             // Настройка удаленного WebDriver для Selenoid
