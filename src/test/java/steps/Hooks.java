@@ -44,7 +44,7 @@ public class Hooks extends BaseTest {
     public static void setUp() {
         // Если драйвер не был инициализирован в BaseTest, можно выполнить настройку драйвера здесь
         if (BaseTest.driver == null) {
-            System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
+            System.setProperty("webdriver.chrome.driver", "src/main/resources/drivers/chromedriver.exe");
             BaseTest.driver = new ChromeDriver();
             BaseTest.driver.manage().window().maximize();
             BaseTest.driver.get("https://qualit.applineselenoid.fvds.ru/");
