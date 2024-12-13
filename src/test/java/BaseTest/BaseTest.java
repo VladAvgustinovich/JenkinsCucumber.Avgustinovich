@@ -47,22 +47,21 @@ public class BaseTest {
     private static void initRemoteDriver() {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setBrowserName(System.getProperty("type.browser", "chrome"));
-        capabilities.setVersion(System.getProperty("browser.version", "109.0"));
-
+        capabilities.setVersion("109.0");
         Map<String, Object> selenoidOptions = new HashMap<>();
         selenoidOptions.put("enableVNC", true);
         selenoidOptions.put("enableVideo", false);
         capabilities.setCapability("selenoid:options", selenoidOptions);
-
         try {
             driver = new RemoteWebDriver(
-                    URI.create(System.getProperty("selenoid.url", "http://jenkins.applineselenoid.fvds.ru:4444/wd/hub")).toURL(),
+                    URI.create(System.getProperty("selenoid.url", "http://jenkins.applineselenoid.fvds.ru:4444/wd/hub/")).toURL(),
                     capabilities
             );
         } catch (MalformedURLException e) {
             throw new RuntimeException("Ошибка подключения к Selenoid", e);
         }
     }
+
 
     @AfterAll
     @Step("Завершение работы драйвера")
