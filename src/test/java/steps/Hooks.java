@@ -21,7 +21,7 @@ public class Hooks {
 
     public static WebDriver driver;
     private static Process process;
-    private final String url = "jdbc:h2:tcp://localhost:9092/mem:testdb";
+    private final String url = "jdbc:h2:tcp://qualit.applineselenoid.fvds.ru:9092/mem:testdb";
     private final String user = "user";
     private final String password = "pass";
 
@@ -31,10 +31,10 @@ public class Hooks {
     public static void setUp() {
         if (driver == null) {
             // Настройка WebDriver
-            System.setProperty("webdriver.chromedriver/driver", "\\src\\test\\resources\\chromedriver.exe");
+            System.setProperty("webdriver.chromedriver.driver", "/src/main/resources/drivers/chromedriver.exe");
             driver = new ChromeDriver();
             driver.manage().window().maximize();
-            driver.get("http://localhost:8080");
+            driver.get("https://qualit.applineselenoid.fvds.ru/");
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
             driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
         }
