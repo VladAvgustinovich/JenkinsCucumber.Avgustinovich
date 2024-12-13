@@ -23,13 +23,13 @@ public class Hooks extends BaseTest {
     public static WebDriver driver;
     private static Process process;
     private static Connection connection;
-    private final String url = "jdbc:h2:tcp://qualit.applineselenoid.fvds.ru:9092/mem:testdb";
-    private final String user = "user";
-    private final String password = "pass";
+    private static final String url = "jdbc:h2:tcp://qualit.applineselenoid.fvds.ru:9092/mem:testdb";
+    private static final String user = "user";
+    private static final String password = "pass";
 
 
     @BeforeAll(order = 2)
-    public void dataBaseConnection() {
+    public static void dataBaseConnection() {
         // Устанавливаем соединение с БД
         try {
             connection = DriverManager.getConnection(url, user, password);
@@ -41,7 +41,7 @@ public class Hooks extends BaseTest {
     }
 
     @BeforeAll(order = 1)
-    public void setUp() {
+    public static void setUp() {
         // Если драйвер не был инициализирован в BaseTest, можно выполнить настройку драйвера здесь
         if (BaseTest.driver == null) {
             System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
