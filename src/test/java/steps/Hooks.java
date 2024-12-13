@@ -1,5 +1,6 @@
 package steps;
 
+import BaseTest.BaseTest;
 import DataBaseConfig.DataBaseConfig;
 import io.cucumber.java.AfterAll;
 import io.cucumber.java.BeforeAll;
@@ -17,33 +18,43 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.Duration;
 
-public class Hooks {
+public class Hooks extends BaseTest {
 
     public static WebDriver driver;
     private static Process process;
+    private static Connection connection;
     private final String url = "jdbc:h2:tcp://qualit.applineselenoid.fvds.ru:9092/mem:testdb";
     private final String user = "user";
     private final String password = "pass";
 
 
+    @BeforeAll(order = 2)
+    public void dataBaseConnection() {
+        // Устанавливаем соединение с БД
+        try {
+            connection = DriverManager.getConnection(url, user, password);
+            System.out.println("Подключение к базе данных успешно установлено.");
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка подключения к базе данных: " + e.getMessage());
+        }
+
+    }
+
     @BeforeAll(order = 1)
-    @И("Установлено подключение к БД")
-    public static void setUp() {
-        if (driver == null) {
-            // Настройка WebDriver
-            System.setProperty("webdriver.chromedriver.driver", "/src/main/resources/drivers/chromedriver.exe");
-            driver = new ChromeDriver();
-            driver.manage().window().maximize();
-            driver.get("https://qualit.applineselenoid.fvds.ru/");
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+    public void setUp() {
+        // Если драйвер не был инициализирован в BaseTest, можно выполнить настройку драйвера здесь
+        if (BaseTest.driver == null) {
+            System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
+            BaseTest.driver = new ChromeDriver();
+            BaseTest.driver.manage().window().maximize();
+            BaseTest.driver.get("https://qualit.applineselenoid.fvds.ru/");
+            BaseTest.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+            BaseTest.driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
         }
     }
 
-    @BeforeAll(order = 2)
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, user, password);
-    }
+
+
 
     @AfterAll
     public static void tearDown() {

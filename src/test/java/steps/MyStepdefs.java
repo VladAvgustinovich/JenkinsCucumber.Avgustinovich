@@ -2,6 +2,9 @@ package steps;
 
 import io.cucumber.java.ru.И;
 import org.junit.jupiter.api.Assertions;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import pages.*;
 import DataBaseConfig.*;
@@ -10,6 +13,7 @@ import static steps.Hooks.driver;
 
 public class MyStepdefs {
     DataBaseConfig dataBaseConfig = new DataBaseConfig();
+
 
     @И("Нажать на кнопку \"Добавить\", в поле \"Наименование\" ввести {string}, тип - {string}, чекбокс экзотический - {string}")
     public void addFruitExotic(String name, String type, String isExotic) {
