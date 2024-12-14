@@ -1,8 +1,8 @@
 package BaseTest;
 
+import io.cucumber.java.AfterAll;
+import io.cucumber.java.BeforeAll;
 import io.qameta.allure.Step;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,7 +12,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.sql.Connection;
@@ -32,7 +31,7 @@ public class BaseTest {
 
     @BeforeAll
     @Step("Инициализация драйвера")
-    static void setup() {
+    public static void setup() {
         String driverType = System.getProperty("type.driver", "local");
         if ("remote".equalsIgnoreCase(driverType)) {
             initRemoteDriver();
@@ -80,8 +79,8 @@ public class BaseTest {
         }
     }
 
-
-    static void tearDown() {
+    @AfterAll
+    public static void tearDown() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         // Ожидаем выпадающий список
         try {
